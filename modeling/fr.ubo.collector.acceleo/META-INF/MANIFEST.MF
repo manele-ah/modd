@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Acceleo Acceleo Module Runtime Plug-in
+Bundle-SymbolicName: fr.ubo.collector.acceleo
+Automatic-Module-Name: fr.ubo.collector.acceleo
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: fr.ubo.collector.acceleo.Activator
+Bundle-Vendor: Eclipse Modeling Project
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.ocl,
+ org.eclipse.ocl.ecore,
+ org.eclipse.acceleo.common;bundle-version="3.3.0",
+ org.eclipse.acceleo.model;bundle-version="3.3.0",
+ org.eclipse.acceleo.profiler;bundle-version="3.3.0",
+ org.eclipse.acceleo.engine;bundle-version="3.3.0",
+ com.google.guava,
+ fr.ubo.collector;bundle-version="0.1.0",
+ fr.ubo.collector.edit;bundle-version="1.0.0",
+ fr.ubo.collector.editor;bundle-version="1.0.0",
+ fr.ubo.collector.dsl;bundle-version="1.0.0",
+ fr.ubo.collector.dsl.ide;bundle-version="1.0.0",
+ fr.ubo.collector.dsl.tests;bundle-version="1.0.0",
+ fr.ubo.collector.dsl.ui;bundle-version="1.0.0",
+ fr.ubo.collector.dsl.ui.tests;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Eclipse-LazyStart: true
+Export-Package: fr.ubo.collector.acceleo.main
+

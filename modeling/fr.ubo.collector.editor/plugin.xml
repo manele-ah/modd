@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated collector -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="fr.ubo.collector.presentation.CollectorModelWizardID"
+            name="%_UI_CollectorModelWizard_label"
+            class="fr.ubo.collector.presentation.CollectorModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/CollectorModelFile.gif">
+         <description>%_UI_CollectorModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated collector -->
+      <editor
+            id="fr.ubo.collector.presentation.CollectorEditorID"
+            name="%_UI_CollectorEditor_label"
+            icon="icons/full/obj16/CollectorModelFile.gif"
+            extensions="collector"
+            class="fr.ubo.collector.presentation.CollectorEditor"
+            contributorClass="fr.ubo.collector.presentation.CollectorActionBarContributor">
+      </editor>
+   </extension>
+</plugin>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel"
+    modelDirectory="/fr.ubo.collector/src-gen" creationIcons="false"
+    editDirectory="/fr.ubo.collector.edit/src-gen" editorDirectory="/fr.ubo.collector.editor/src-gen"
+    modelPluginID="fr.ubo.collector" modelName="Collector" editPluginClass="fr.ubo.collector.provider.CollectorEditPlugin"
+    editorPluginClass="fr.ubo.collector.presentation.CollectorEditorPlugin" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    codeFormatting="true" testSuiteClass="fr.ubo.collector.tests.CollectorAllTests"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    editPluginID="fr.ubo.collector.edit" editorPluginID="fr.ubo.collector.editor"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>collector.ecore</foreignModel>
+  <testsDirectory xsi:nil="true"/>
+  <genPackages prefix="Collector" basePackage="fr.ubo" disposableProviderFactory="true"
+      ecorePackage="collector.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="collector.ecore#//MeasurementDataUnit">
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/METER"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/METER_PER_SECOND"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/METER_PER_SECOND_SQUARED"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/DEGREE_CELSIUS"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/RADIAN"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/RADIAN_PER_SECOND"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/BAR"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/LITER"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/GRAM"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//MeasurementDataUnit/NONE"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="collector.ecore#//Aggregation">
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//Aggregation/MIN"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//Aggregation/MAX"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//Aggregation/AVERAGE"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//Aggregation/FIRST"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//Aggregation/LAST"/>
+      <genEnumLiterals ecoreEnumLiteral="collector.ecore#//Aggregation/ALL"/>
+    </genEnums>
+    <genClasses ecoreClass="collector.ecore#//DataCollector">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//DataCollector/drone"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//DataCollector/pubBroker"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//DataCollector/publishers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//DataCollector/subscribers"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//DataCollector/subBroker"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//NamedElement/name"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//Drone">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//Drone/sensorsDrone"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//Sensor">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//Sensor/sensorMeasuredVariables"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//MeasuredVariable">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//MeasuredVariable/unit"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//Publisher">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference collector.ecore#//Publisher/publishedMeasures"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//Publisher/period"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//Subscriber">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//Subscriber/period"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//Subscriber/aggregation"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference collector.ecore#//Subscriber/monitoredMeasure"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//PubBroker">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//PubBroker/logPath"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//SubBroker">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//SubBroker/configurationPath"/>
+    </genClasses>
+    <genClasses ecoreClass="collector.ecore#//AddressableElement">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference collector.ecore#//AddressableElement/id"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="collector.ecore#//Endpoint"/>
+    <genClasses ecoreClass="collector.ecore#//TcpIpEndpoint">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//TcpIpEndpoint/ipAddress"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute collector.ecore#//TcpIpEndpoint/port"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

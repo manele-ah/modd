@@ -1,0 +1,26 @@
+DataCollector
+{
+	Drone usv 
+	{
+		Sensors
+		{
+			Sensor accelerometer measures
+			{
+				accel_x(METER_PER_SECOND_SQUARED);
+				accel_y(METER_PER_SECOND_SQUARED);
+				accel_z(METER_PER_SECOND_SQUARED);
+			}
+		}
+	}
+	PubBroker broker("192.168.1.128":7171, "/path/to/logs");
+	SubBroker proxy("192.168.1.163":7272, "/path/to/conf");
+	Publishers
+	{
+		Publisher pub_1("192.168.1.128":7373, 0.04, "usv.accelerometer.accel_x", "usv.accelerometer.accel_y", "usv.accelerometer.accel_z");
+	}
+	Subscriptions
+	{
+		Subscriber sub_1("192.168.1.173":7474, "usv.accelerometer.accel_x", 1.0, MIN);
+		Subscriber sub_2("192.168.1.173":7474, "usv.accelerometer.accel_z", 3.0, AVERAGE);
+	}
+}
