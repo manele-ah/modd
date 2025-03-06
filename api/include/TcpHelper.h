@@ -1,5 +1,5 @@
-#ifndef DRONEPROTOCOL_TCPHELPER_H
-#define DRONEPROTOCOL_TCPHELPER_H
+#ifndef MODD_TCPHELPER_H
+#define MODD_TCPHELPER_H
 
 #pragma once
 
@@ -16,14 +16,14 @@
 #include <boost/serialization/unique_ptr.hpp>
 #include <boost/array.hpp>
 
-class shared_const_buffer
+class SharedConstantBuffer
 {
 private:
     boost::shared_ptr<std::vector<char>> m_data;
     boost::asio::const_buffer m_buffer;
 
 public:
-    explicit shared_const_buffer(const std::string& data) : m_data(new std::vector<char>(data.begin(), data.end())), m_buffer(boost::asio::buffer(*m_data))
+    explicit SharedConstantBuffer(const std::string& data) : m_data(new std::vector<char>(data.begin(), data.end())), m_buffer(boost::asio::buffer(*m_data))
     {
 
     }
@@ -49,7 +49,8 @@ public:
 constexpr int HEADER_LENGTH = 8;
 
 /**
- * Helper class that facilitates TCP communications by handling serialization and networking tasks.
+ * @class TcpHelper
+ * @brief Helper class that facilitates TCP communications by handling serialization and networking tasks.
  */
 class TcpHelper
 {
@@ -67,7 +68,7 @@ private:
 
 public:
     /**
-     * Initialize a TCP socket.
+     * @brief Initialize a TCP socket.
      * @param io_context: Reference to Boost I/O context.
      */
     explicit TcpHelper(boost::asio::io_context& io_context) : m_socket(io_context), m_in_header{}
@@ -76,7 +77,7 @@ public:
     }
 
     /**
-     * Getter method for TCP socket.
+     * @brief Retrieve the TCP socket.
      * @return A reference to the TCP socket.
      */
     boost::asio::ip::tcp::socket& getSocket()
@@ -85,7 +86,7 @@ public:
     }
 
     /**
-     * Asynchronously write serialized data to the TCP socket and handle completion with a user-defined handler.
+     * @brief Asynchronously write serialized data to the TCP socket and handle completion with a user-defined handler.
      * @tparam T: Type of data to serialize.
      * @tparam Handler: Type of handler to manage completion of the write operation.
      * @param data_type: Reference to the data to serialize and send.
@@ -114,13 +115,12 @@ public:
         }
         m_out_header = std::move(header_stream).str();
 
-        shared_const_buffer buffer(m_out_header + m_out_data);
+        SharedConstantBuffer buffer(m_out_header + m_out_data);
         boost::asio::async_write(m_socket, buffer, handler);
     }
 
     /**
-     * Asynchronously read data from the TCP socket, deserialize it into a specified data type and handle completion
-     * with a user-defined handler.
+     * @brief Asynchronously read data from the TCP socket, deserialize it into a specified data type and handle completion with a user-defined handler.
      * @tparam T: Type of data to deserialize into.
      * @tparam Handler: Type of handler to manage completion of the read operation.
      * @param data_type: Reference to store the deserialized data.
@@ -135,7 +135,7 @@ public:
     }
 
     /**
-     * Internal handler to manage reading headers during TCP communications.
+     * @brief Internal handler to manage reading headers during TCP communications.
      * @tparam T: Type of data expected to be received.
      * @tparam Handler: Type of handler to manage completion of the read operation.
      * @param error_code: Error information passed by Boost.
@@ -171,7 +171,7 @@ public:
     }
 
     /**
-     * Internal handler to manage reading data during TCP communications.
+     * @brief Internal handler to manage reading data during TCP communications.
      * @tparam T: Type of data expected to be received.
      * @tparam Handler: Type of handler to manage completion of the read operation.
      * @param error_code: Error information passed by Boost.

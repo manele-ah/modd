@@ -1,10 +1,11 @@
-#ifndef DRONEPROTOCOL_SESSIONTYPE_H
-#define DRONEPROTOCOL_SESSIONTYPE_H
+#ifndef MODD_SESSIONTYPE_H
+#define MODD_SESSIONTYPE_H
 
 #pragma once
 
 /**
- * Types of TCP sessions
+ * @enum SessionType
+ * @brief Types of TCP sessions.
  */
 enum class SessionType
 {

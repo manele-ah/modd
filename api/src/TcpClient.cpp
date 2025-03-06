@@ -1,18 +1,20 @@
-#include "../include/TcpClient.h"
+#include <utility>
+
+#include "TcpClient.h"
 
 /**
- * Initialize a TCP client.
+ * @brief Initialize a TCP client.
  * @param id: Client ID.
  * @param server_id: Server TCP/IP ID.
  * @param io_context: Reference to Boost I/O context.
  */
-TcpClient::TcpClient(const std::string& id, TcpIpId& server_id, boost::asio::io_context& io_context) : m_id(id), m_server_id(server_id), m_number_retry(0), m_io_context(io_context), m_connection(new TcpHelper(m_io_context))
+TcpClient::TcpClient(std::string id, TcpIpId& server_id, boost::asio::io_context& io_context) : m_id(std::move(id)), m_server_id(server_id), m_number_retry(0), m_io_context(io_context), m_connection(new TcpHelper(m_io_context))
 {
 
 }
 
 /**
- * Virtual destructor that disconnects a client.
+ * @brief Virtual destructor that disconnects a client.
  */
 TcpClient::~TcpClient()
 {
@@ -20,7 +22,7 @@ TcpClient::~TcpClient()
 }
 
 /**
- * Initiate a connection to the server.
+ * @brief Initiate a connection to the server.
  */
 void TcpClient::connect()
 {
@@ -30,7 +32,7 @@ void TcpClient::connect()
 }
 
 /**
- * Read the received message.
+ * @brief Read the received message.
  */
 void TcpClient::read()
 {
@@ -38,7 +40,7 @@ void TcpClient::read()
 }
 
 /**
- * Write a message.
+ * @brief Write a message.
  * @param message: Message to be sent to the server.
  */
 void TcpClient::write(const Message& message)
@@ -47,7 +49,7 @@ void TcpClient::write(const Message& message)
 }
 
 /**
- * Close TCP socket.
+ * @brief Close TCP socket.
  */
 void TcpClient::disconnect()
 {
@@ -55,7 +57,7 @@ void TcpClient::disconnect()
 }
 
 /**
- * Handle the completion of an asynchronous connect request.
+ * @brief Handle the completion of an asynchronous connect request.
  * @param error: Error information passed by Boost.
  */
 void TcpClient::handleConnect(const boost::system::error_code& error)
@@ -82,7 +84,7 @@ void TcpClient::handleConnect(const boost::system::error_code& error)
 }
 
 /**
- * Handle the completion of an asynchronous read request.
+ * @brief Handle the completion of an asynchronous read request.
  * @param error: Error information passed by Boost.
  */
 void TcpClient::handleRead(const boost::system::error_code& error)
@@ -99,7 +101,7 @@ void TcpClient::handleRead(const boost::system::error_code& error)
 }
 
 /**
- * Handle the completion of an asynchronous write request.
+ * @brief Handle the completion of an asynchronous write request.
  * @param error: Error information passed by Boost.
  */
 void TcpClient::handleWrite(const boost::system::error_code& error)
@@ -115,7 +117,7 @@ void TcpClient::handleWrite(const boost::system::error_code& error)
 }
 
 /**
- * Handle a disconnect operation.
+ * @brief Handle a disconnect operation.
  */
 void TcpClient::handleDisconnect()
 {

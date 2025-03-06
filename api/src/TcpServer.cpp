@@ -1,7 +1,7 @@
-#include "../include/TcpServer.h"
+#include "TcpServer.h"
 
 /**
- * Initialize a TCP server and start listening for incoming connections.
+ * @brief Initialize a TCP server and start listening for incoming connections.
  * @param id: Server TCP/IP ID.
  * @param io_context: Reference to Boost I/O context.
  */
@@ -11,7 +11,7 @@ TcpServer::TcpServer(TcpIpId& id, boost::asio::io_context& io_context) : m_id(id
 }
 
 /**
- * Start listening for incoming connections.
+ * @brief Start listening for incoming connections.
  */
  void TcpServer::listen()
 {
@@ -21,7 +21,7 @@ TcpServer::TcpServer(TcpIpId& id, boost::asio::io_context& io_context) : m_id(id
 }
 
 /**
- * Handle the acceptance of a new connection by creating a new session.
+ * @brief Handle the acceptance of a new connection by creating a new session.
  * @param connection: Newly accepted TCP connection.
  * @param error: Error information passed by Boost.
  */

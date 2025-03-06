@@ -1,0 +1,21 @@
+<map id="DoubleBuffer&lt; T &gt;" name="DoubleBuffer&lt; T &gt;">
+<area shape="rect" id="Node000001" title="Class that defines a thread&#45;safe double buffering mechanism to handle concurrent reads and writes...." alt="" coords="146,453,273,478"/>
+<area shape="rect" id="Node000002" href="$class_buffer.html" title="Class that defines a buffer to store a collection of elements." alt="" coords="48,349,134,375"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,383,197,450,194,454,114,387"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="39,253,118,278"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="85,293,92,348,86,349,79,294"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,155,131,196"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="75,211,80,252,75,253,70,212"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="162,349,260,375"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="213,390,212,452,207,452,208,390"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="148,245,284,286"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="217,302,214,349,209,349,211,301"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="155,155,288,196"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="222,212,220,245,215,245,217,211"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="144,80,298,106"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="224,122,224,155,219,155,219,122"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="172,5,271,31"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="224,46,224,80,219,80,219,46"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="285,349,368,375"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="322,391,313,411,299,431,280,445,259,454,257,450,277,440,295,427,309,409,318,388"/>
+</map>

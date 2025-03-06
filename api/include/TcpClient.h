@@ -1,5 +1,5 @@
-#ifndef DRONEPROTOCOL_TCPCLIENT_H
-#define DRONEPROTOCOL_TCPCLIENT_H
+#ifndef MODD_TCPCLIENT_H
+#define MODD_TCPCLIENT_H
 
 #pragma once
 
@@ -9,7 +9,10 @@
 #include "Message.h"
 #include "TcpHelper.h"
 
-/** Class that defines a TCP client. */
+/**
+ * @class TcpClient
+ * @brief Class that defines a TCP client.
+ */
 class TcpClient
 {
 protected:
@@ -29,25 +32,25 @@ protected:
     p_tcp_connection m_connection;
 
     /**
-     * Handle the completion of an asynchronous connect request.
+     * @brief Handle the completion of an asynchronous connect request.
      * @param error: Error information passed by Boost.
      */
     void handleConnect(const boost::system::error_code& error);
 
     /**
-     * Handle the completion of an asynchronous read request.
+     * @brief Handle the completion of an asynchronous read request.
      * @param error: Error information passed by Boost.
      */
     void handleRead(const boost::system::error_code& error);
 
     /**
-     * Handle the completion of an asynchronous write request.
+     * @brief Handle the completion of an asynchronous write request.
      * @param error: Error information passed by Boost.
      */
     void handleWrite(const boost::system::error_code& error);
 
     /**
-     * Handle a disconnect operation.
+     * @brief Handle a disconnect operation.
      */
     void handleDisconnect();
 
@@ -58,36 +61,36 @@ public:
     static constexpr int WAIT_TIME = 5;
 
     /**
-     * Initialize a TCP client.
+     * @brief Initialize a TCP client.
      * @param id: Client ID.
      * @param server_id: Server TCP/IP ID.
      * @param io_context: Reference to Boost I/O context.
      */
-    TcpClient(const std::string& id, TcpIpId& server_id, boost::asio::io_context& io_context);
+    TcpClient(std::string id, TcpIpId& server_id, boost::asio::io_context& io_context);
 
     /**
-     * Virtual destructor that disconnects a client.
+     * @brief Virtual destructor that disconnects a client.
      */
     virtual ~TcpClient();
 
     /**
-     * Initiate a connection to the server.
+     * @brief Initiate a connection to the server.
      */
     void connect();
 
     /**
-     * Read the received message.
+     * @brief Read the received message.
      */
     virtual void read();
 
     /**
-     * Write a message.
+     * @brief Write a message.
      * @param message: Message to be sent to the server.
      */
     void write(const Message& message);
 
     /**
-     * Close TCP socket.
+     * @brief Close TCP socket.
      */
     void disconnect();
 };

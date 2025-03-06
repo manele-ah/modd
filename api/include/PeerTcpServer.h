@@ -1,11 +1,14 @@
-#ifndef DRONEPROTOCOL_PEERTCPSERVER_H
-#define DRONEPROTOCOL_PEERTCPSERVER_H
+#ifndef MODD_PEERTCPSERVER_H
+#define MODD_PEERTCPSERVER_H
 
 #pragma once
 
 #include "TcpServer.h"
 
-/** Class that defines a peer TCP server. */
+/**
+ * @class PeerTcpServer
+ * @brief Class that defines a peer TCP server.
+ */
 class PeerTcpServer : public TcpServer
 {
 protected:
@@ -19,7 +22,7 @@ protected:
     int m_number_retry;
 
     /**
-     * Handle the completion of an asynchronous connect request.
+     * @brief Handle the completion of an asynchronous connect request.
      * @param connection: Newly connected TCP connection.
      * @param error: Error information passed by Boost.
      */
@@ -32,7 +35,7 @@ public:
     static constexpr int WAIT_TIME = 5;
 
     /**
-     * Initialize a TCP server and start listening for incoming connections.
+     * @brief Initialize a TCP server and start listening for incoming connections.
      * @param id: Server TCP/IP ID.
      * @param peer_id: Peer server TCP/IP ID.
      * @param io_context: Reference to Boost I/O context.
@@ -41,21 +44,24 @@ public:
     PeerTcpServer(TcpIpId& id, TcpIpId& peer_id, bool initiator, boost::asio::io_context& io_context, std::function<void()> established_connection_callback = nullptr);
 
     /**
-     * Establish connection with peer server.
+     * @brief Establish connection with peer server.
      * @param established_connection_callback: Function called when the connection to peer server is established.
      */
     void connectToPeer(const std::function<void()>& established_connection_callback = nullptr);
 
     /**
-     * Send message to peer server.
+     * @brief Send message to peer server.
      * @param message : Message to be sent.
      */
     void sendToPeer(const Message& message);
 
+    /**
+     * @brief Send initial message to peer.
+     */
     void sendInitialMessageToPeer();
 
     /**
-     * Decode the received message.
+     * @brief Decode the received message.
      * @param message: Received message.
      * @param session: Pointer to the session from which the message was received.
      */

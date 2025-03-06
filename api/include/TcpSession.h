@@ -1,5 +1,5 @@
-#ifndef DRONEPROTOCOL_TCPSESSION_H
-#define DRONEPROTOCOL_TCPSESSION_H
+#ifndef MODD_TCPSESSION_H
+#define MODD_TCPSESSION_H
 
 #pragma once
 
@@ -14,7 +14,10 @@
 
 class TcpServer;
 
-/** Class that defines a TCP session. */
+/**
+ * @class TcpSession
+ * @brief Class that defines a TCP session.
+ */
 class TcpSession : public boost::enable_shared_from_this<TcpSession>
 {
 private:
@@ -29,7 +32,7 @@ private:
     // boost::asio::strand<boost::asio::any_io_executor> m_strand;
 
     /**
-     * Initialize a TCP session.
+     * @brief Initialize a TCP session.
      * @param tcp_connection: Pointer to the TCP connection.
      * @param server: Reference to the associated TCP server.
      * @param type: Session type.
@@ -37,25 +40,25 @@ private:
     TcpSession(p_tcp_connection tcp_connection, TcpServer& server, SessionType type);
 
     /**
-     * Wait for data to be received on the TCP connection.
+     * @brief Wait for data to be received on the TCP connection.
      */
     void waitForData();
 
     /**
-     * Read and decode received message.
+     * @brief Read and decode received message.
      * @param error: Error information passed by Boost.
      */
     void handleRead(const boost::system::error_code& error);
 
     /**
-     * Handle the completion of a write operation.
+     * @brief Handle the completion of a write operation.
      * @param error: Error information passed by Boost.
      */
     void handleWrite(const boost::system::error_code& error);
 
 public:
     /**
-     * Factory method to create a new TCP session and initiate data reception.
+     * @brief Factory method to create a new TCP session and initiate data reception.
      * @param tcp_connection: Pointer to the TCP connection.
      * @param server: Reference to the associated TCP server.
      * @param type: Session type.
@@ -63,15 +66,15 @@ public:
      */
     static boost::shared_ptr<TcpSession> create(p_tcp_connection tcp_connection, TcpServer& server, SessionType type = SessionType::SERVER_TO_CLIENT)
     {
-        BOOST_LOG_TRIVIAL(debug) << "TCP Session : Create new session";
+        BOOST_LOG_TRIVIAL(debug) << "[TCP Session] Create new session";
         boost::shared_ptr<TcpSession> session(new TcpSession(tcp_connection, server, type));
-        BOOST_LOG_TRIVIAL(debug) << "TCP Session : Wait for data";
+        BOOST_LOG_TRIVIAL(debug) << "[TCP Session] Wait for data";
         session->waitForData();
         return session;
     }
 
     /**
-     * Deliver a message to the client connected in this TCP session.
+     * @brief Deliver a message to the client connected in this TCP session.
      * @param message: Message to be sent.
      */
     void deliver(const Message& message);

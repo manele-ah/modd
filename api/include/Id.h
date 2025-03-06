@@ -1,19 +1,22 @@
-#ifndef DRONEPROTOCOL_ID_H
-#define DRONEPROTOCOL_ID_H
+#ifndef MODD_ID_H
+#define MODD_ID_H
 
 #pragma once
 
 #include <ostream>
 
-/** Abstract class of an ID. */
+/**
+ * @class Id
+ * @brief Abstract class of an ID.
+ */
 class Id
 {
 public:
-    /** Virtual destructor. */
+    /** @brief Virtual destructor of an ID. */
     virtual ~Id() = default;
 
     /**
-     * Pure virtual print method.
+     * @brief Pure virtual print method.
      * @param out: Reference to the output stream where the ID will be printed.
      */
     virtual void print(std::ostream& out) const = 0;
@@ -21,10 +24,10 @@ public:
 
 
 /**
- * Overload the "<<" operator for an ID.
- * @param out: Reference to the output stream where the ID will be added.
+ * @brief Overload the output stream operator for printing ID details.
+ * @param out: Output stream to write to.
  * @param id: Reference to an ID.
- * @return The modified output stream.
+ * @return Reference to the modified output stream.
  */
 std::ostream& operator<<(std::ostream& out, const Id& id);
 

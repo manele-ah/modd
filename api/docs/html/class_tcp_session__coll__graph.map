@@ -1,0 +1,25 @@
+<map id="TcpSession" name="TcpSession">
+<area shape="rect" id="Node000001" title="Class that defines a TCP session." alt="" coords="198,405,287,431"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,301,179,342"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,348,224,402,222,407,135,353"/>
+<area shape="rect" id="Node000003" href="$class_tcp_server.html" title="Class that defines a TCP server." alt="" coords="202,309,283,334"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="245,350,245,404,240,404,240,350"/>
+<area shape="rect" id="Node000004" href="$class_tcp_ip_id.html" title="Class to handle TCP/IP endpoints." alt="" coords="68,205,132,231"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="131,238,227,306,224,311,128,242"/>
+<area shape="rect" id="Node000005" href="$class_id.html" title="Abstract class of an ID." alt="" coords="39,109,78,135"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="72,148,97,204,92,206,68,150"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="102,109,181,135"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="132,150,108,206,103,204,128,148"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="79,5,204,46"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="144,61,144,109,139,109,139,61"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="156,205,329,231"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="245,246,245,308,240,308,240,246"/>
+<area shape="rect" id="Node000009" href="$class_message.html" title="Class that defines a message." alt="" coords="347,309,421,334"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="359,346,308,383,268,407,265,402,305,379,356,342"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="354,198,513,238"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="419,254,392,310,387,307,415,251"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="344,109,522,135"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="436,150,436,197,431,197,431,150"/>
+<area shape="rect" id="Node000012" href="$class_payload.html" title="Abstract class that defines different types of payloads in a message." alt="" coords="399,13,468,38"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="436,54,436,108,431,108,431,54"/>
+</map>

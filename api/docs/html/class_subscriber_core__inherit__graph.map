@@ -1,0 +1,5 @@
+<map id="SubscriberCore" name="SubscriberCore">
+<area shape="rect" id="Node000001" title="Class that defines the core logic of a subscriber." alt="" coords="5,79,117,105"/>
+<area shape="rect" id="Node000002" href="$class_tcp_client.html" title="Class that defines a TCP client." alt="" coords="23,5,99,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="64,46,64,79,58,79,58,46"/>
+</map>

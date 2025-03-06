@@ -1,0 +1,26 @@
+<map id="PubBroker" name="PubBroker">
+<area shape="rect" id="Node000001" title="Class that defines the PubBroker. It manages the publication process and acts as an intermediary betw..." alt="" coords="1276,163,1358,188"/>
+<area shape="rect" id="Node000002" href="$class_peer_tcp_server.html" title="Class that defines a peer TCP server." alt="" coords="989,51,1097,76"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1112,64,1182,76,1219,87,1253,103,1287,131,1309,161,1305,164,1283,135,1250,107,1217,92,1181,81,1112,69"/>
+<area shape="rect" id="Node000003" href="$class_tcp_server.html" title="Class that defines a TCP server." alt="" coords="779,51,859,76"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="875,61,989,61,989,66,875,66"/>
+<area shape="rect" id="Node000004" href="$class_tcp_ip_id.html" title="Class to handle TCP/IP endpoints." alt="" coords="447,12,511,38"/>
+<area shape="poly" id="edge8_Node000002_Node000004" title=" " alt="" coords="526,19,590,16,672,13,755,16,848,26,941,42,990,51,989,56,940,48,848,31,755,21,672,18,590,21,526,24"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="527,28,779,56,778,62,526,33"/>
+<area shape="rect" id="Node000005" href="$class_id.html" title="Abstract class of an ID." alt="" coords="200,12,239,38"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="255,22,446,22,446,28,255,28"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="180,112,259,138"/>
+<area shape="poly" id="edge9_Node000001_Node000006" title=" " alt="" coords="275,139,369,162,423,170,478,173,1044,173,1275,173,1275,178,1044,178,478,178,423,175,368,167,273,144"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="260,103,322,75,391,46,446,30,447,35,393,51,324,79,263,107"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="590,112,755,138"/>
+<area shape="poly" id="edge11_Node000009_Node000006" title=" " alt="" coords="275,122,589,122,589,128,275,128"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="5,105,131,145"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="146,122,179,122,179,128,146,128"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="392,61,566,87"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="581,75,666,75,755,71,778,68,779,73,755,76,666,80,581,80"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="770,121,992,127,1122,137,1252,154,1276,160,1275,165,1251,160,1122,142,991,132,770,126"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="974,213,1112,253"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="1127,228,1188,221,1251,207,1294,187,1296,191,1253,212,1189,226,1127,233"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="964,277,1122,333"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="1136,290,1195,273,1250,247,1283,218,1306,187,1310,190,1287,221,1253,252,1196,278,1138,295"/>
+</map>

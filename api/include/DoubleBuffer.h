@@ -1,5 +1,5 @@
-#ifndef DRONEPROTOCOL_DOUBLEBUFFER_H
-#define DRONEPROTOCOL_DOUBLEBUFFER_H
+#ifndef MODD_DOUBLEBUFFER_H
+#define MODD_DOUBLEBUFFER_H
 
 #pragma once
 
@@ -12,36 +12,77 @@
 #include <condition_variable>
 #include "Buffer.h"
 
-// One writer and multiple readers
+/**
+ * @class DoubleBuffer
+ * @brief Class that defines a thread-safe double buffering mechanism to handle concurrent reads and writes.
+ * Two internal buffers are used, with one writer and multiple readers.
+ * @tparam T: Type of elements stored in the double buffer.
+ */
 template<typename T>
 class DoubleBuffer : public Buffer<T>
 {
 private:
+    /** First buffer. */
     std::vector<T> m_buffer_1;
+    /** Second buffer. */
     std::vector<T> m_buffer_2;
+    /** Pointer to the current read (front) buffer. */
     std::vector<T> *p_front_buffer;
+    /** Pointer to the current write (back) buffer. */
     std::vector<T> *p_back_buffer;
-    int m_write_index;
+    /** Current index in the back buffer for writing. */
+    unsigned int m_write_index;
+    /** Flag indicating if the buffers are ready to be swapped. */
     bool m_is_full;
+    /** File stream for writing buffer data to a file. */
     std::ofstream m_file_stream;
+    /** Mutex for synchronizing write operations. */
     std::mutex m_write_mutex;
+    /** Mutex for managing the full condition of the buffer. */
     std::mutex m_full_mutex;
+    /** Condition variable to signal when the buffer is full. */
     std::condition_variable m_full_condition;
 
 public:
-    DoubleBuffer(int size, bool write_in_file, const std::string& file_path);
+    /**
+     * @brief Initialize a double buffer.
+     * @param size: Size of each internal buffer.
+     * @param write_in_file: Flag to enable or disable file writing.
+     * @param file_path: Path to the file for writing buffer content.
+     */
+    DoubleBuffer(unsigned int size, bool write_in_file, const std::string& file_path);
 
+    /**
+     * @brief Virtual destructor of a double buffer.
+     */
     ~DoubleBuffer();
 
+    /**
+     * @brief Reads the current front buffer into the provided vector.
+     * @param buffer: Vector to store the copied buffer contents.
+     */
     void readBuffer(std::vector<T>& buffer);
 
+    /**
+     * @brief Writes an element to the current back buffer at the current write index.
+     * @param value: The value to write into the buffer.
+     */
     void writeElement(T value);
 
+    /**
+     * @brief Swaps the front and back buffers.
+     */
     void swap();
 };
 
+/**
+ * @brief Initialize a double buffer.
+ * @param size: Size of each internal buffer.
+ * @param write_in_file: Flag to enable or disable file writing.
+ * @param file_path: Path to the file for writing buffer content.
+ */
 template<typename T>
-DoubleBuffer<T>::DoubleBuffer(int size, bool write_in_file, const std::string& file_path) : Buffer<T>(size, write_in_file, file_path), m_buffer_1(size), m_buffer_2(size), p_front_buffer(&m_buffer_1), p_back_buffer(&m_buffer_2), m_write_index(0), m_is_full(false)
+DoubleBuffer<T>::DoubleBuffer(unsigned int size, bool write_in_file, const std::string& file_path) : Buffer<T>(size, write_in_file, file_path), m_buffer_1(size), m_buffer_2(size), p_front_buffer(&m_buffer_1), p_back_buffer(&m_buffer_2), m_write_index(0), m_is_full(false)
 {
     if (Buffer<T>::m_write_in_file)
     {
@@ -49,6 +90,9 @@ DoubleBuffer<T>::DoubleBuffer(int size, bool write_in_file, const std::string& f
     }
 }
 
+/**
+ * @brief Virtual destructor of a double buffer.
+ */
 template<typename T>
 DoubleBuffer<T>::~DoubleBuffer()
 {
@@ -58,6 +102,10 @@ DoubleBuffer<T>::~DoubleBuffer()
     }
 }
 
+/**
+ * @brief Reads the current front buffer into the provided vector.
+ * @param buffer: Vector to store the copied buffer contents.
+ */
 template<typename T>
 void DoubleBuffer<T>::readBuffer(std::vector<T> &buffer)
 {
@@ -72,6 +120,10 @@ void DoubleBuffer<T>::readBuffer(std::vector<T> &buffer)
     // m_is_full = false;
 }
 
+/**
+ * @brief Writes an element to the current back buffer at the current write index.
+ * @param value: The value to write into the buffer.
+ */
 template<typename T>
 void DoubleBuffer<T>::writeElement(T value)
 {
@@ -83,6 +135,9 @@ void DoubleBuffer<T>::writeElement(T value)
         swap();
 }
 
+/**
+ * @brief Swaps the front and back buffers.
+ */
 template<typename T>
 void DoubleBuffer<T>::swap()
 {
@@ -94,7 +149,7 @@ void DoubleBuffer<T>::swap()
         std::swap(p_front_buffer, p_back_buffer);
         if (Buffer<T>::m_write_in_file)
         {
-            for (int index = 0; index < Buffer<T>::m_size; index++)
+            for (unsigned int index = 0; index < Buffer<T>::m_size; index++)
             {
                 m_file_stream << (*p_front_buffer)[index] << "\n";
             }

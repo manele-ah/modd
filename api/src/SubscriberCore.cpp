@@ -1,22 +1,32 @@
-#include "../include/SubscriberCore.h"
+#include "SubscriberCore.h"
 
-SubscriberCore::SubscriberCore(const std::string& id, TcpIpId& proxy_id, const std::string& topic, double interval, AggregationType aggregation, boost::asio::io_context& io_context) : TcpClient(id, proxy_id, io_context), m_topic(topic), m_interval(interval), m_aggregation(aggregation)
+/**
+ * @brief Initialize a subscriber instance.
+ * @param id: Subscriber ID.
+ * @param sub_broker_id: SubBroker TCP/IP ID.
+ * @param topic: Topic of interest for the subscriber.
+ * @param interval: Delivery interval in seconds.
+ * @param aggregation: Aggregation type requested by the subscriber.
+ * @param io_context: Reference to Boost I/O context.
+ */
+SubscriberCore::SubscriberCore(const std::string& id, TcpIpId& sub_broker_id, const std::string& topic, double interval, AggregationType aggregation, boost::asio::io_context& io_context) : TcpClient(id, sub_broker_id, io_context), m_topic(topic), m_interval(interval), m_aggregation(aggregation)
 {
     TcpClient::connect();
 }
 
 /**
- * Subscribe to topic
+ * @brief Send a subscription request to the SubBroker.
  */
 void SubscriberCore::subscribe()
 {
-    BOOST_LOG_TRIVIAL(info) << "[Subscriber] Subscribe to topic";
-    Message message(MessageType::SUBSCRIBE_PROXY, std::make_unique<Subscription>(m_id, m_interval, m_aggregation, m_topic));
+    BOOST_LOG_TRIVIAL(info) << "[Subscriber] Subscribe to topic: " << m_topic;
+    unsigned long long interval_milliseconds = secondToMillisecond(m_interval);
+    Message message(MessageType::SUBSCRIBE_SUB_BROKER, std::make_unique<Subscription>(m_id, interval_milliseconds, m_aggregation, m_topic));
     TcpClient::write(message);
 }
 
 /**
- * Read the message sent by the proxy
+ * @brief Read messages sent by the SubBroker.
  */
 void SubscriberCore::read()
 {
@@ -24,8 +34,8 @@ void SubscriberCore::read()
 }
 
 /**
- * Called when a message is received
- * @param error: System-specific error code
+ * @brief Handle the receipt of a message and emits a signal if the message contains valid data for the subscriber.
+ * @param error: System-specific error code  indicating the success or failure of the operation.
  */
 void SubscriberCore::onMessageReceived(const boost::system::error_code& error)
 {

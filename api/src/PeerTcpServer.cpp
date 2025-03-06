@@ -1,7 +1,7 @@
-#include "../include/PeerTcpServer.h"
+#include "PeerTcpServer.h"
 
 /**
- * Initialize a TCP server and start listening for incoming connections.
+ * @brief Initialize a TCP server and start listening for incoming connections.
  * @param id: Server TCP/IP ID.
  * @param peer_id: Peer server TCP/IP ID.
  * @param io_context: Reference to Boost I/O context.
@@ -15,7 +15,7 @@ PeerTcpServer::PeerTcpServer(TcpIpId& id, TcpIpId& peer_id, bool initiator, boos
 }
 
 /**
- * Handle the completion of an asynchronous connect request.
+ * @brief Handle the completion of an asynchronous connect request.
  * @param error: Error information passed by Boost.
  */
 void PeerTcpServer::handleConnect(p_tcp_connection connection, const std::function<void()>& established_connection_callback, const boost::system::error_code& error)
@@ -46,7 +46,7 @@ void PeerTcpServer::handleConnect(p_tcp_connection connection, const std::functi
 }
 
 /**
- * Establish connection with peer server.
+ * @brief Establish connection with peer server.
  */
 void PeerTcpServer::connectToPeer(const std::function<void()>& established_connection_callback)
 {
@@ -60,7 +60,7 @@ void PeerTcpServer::connectToPeer(const std::function<void()>& established_conne
 }
 
 /**
- * Send message to peer server.
+ * @brief Send message to peer server.
  * @param message : Message to be sent.
  */
 void PeerTcpServer::sendToPeer(const Message& message)
@@ -75,6 +75,9 @@ void PeerTcpServer::sendToPeer(const Message& message)
     }
 }
 
+/**
+ * @brief Send initial message to peer.
+ */
 void PeerTcpServer::sendInitialMessageToPeer()
 {
     BOOST_LOG_TRIVIAL(info) << "[Peer TCP Server] Send ping to peer";
@@ -83,7 +86,7 @@ void PeerTcpServer::sendInitialMessageToPeer()
 }
 
 /**
- * Decode the received message.
+ * @brief Decode the received message.
  * @param message: Received message.
  * @param session: Pointer to the session from which the message was received.
  */

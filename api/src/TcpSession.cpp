@@ -1,7 +1,7 @@
-#include "../include/TcpSession.h"
+#include "TcpSession.h"
 
 /**
- * Initialize a TCP session.
+ * @brief Initialize a TCP session.
  * @param tcp_connection: Pointer to the TCP connection.
  * @param server: Reference to the associated TCP server.
  * @param type: Session type.
@@ -13,7 +13,7 @@ TcpSession::TcpSession(p_tcp_connection tcp_connection, TcpServer& server, Sessi
 }
 
 /**
- * Wait for data to be received on the TCP connection.
+ * @brief Wait for data to be received on the TCP connection.
  */
 void TcpSession::waitForData()
 {
@@ -25,7 +25,7 @@ void TcpSession::waitForData()
 }
 
 /**
- * Read and decode received message.
+ * @brief Read and decode received message.
  * @param error: Error information passed by Boost.
  */
 void TcpSession::handleRead(const boost::system::error_code& error)
@@ -42,7 +42,7 @@ void TcpSession::handleRead(const boost::system::error_code& error)
 }
 
 /**
- * Handle the completion of a write operation.
+ * @brief Handle the completion of a write operation.
  * @param error: Error information passed by Boost.
  */
 void TcpSession::handleWrite(const boost::system::error_code& error)
@@ -58,7 +58,7 @@ void TcpSession::handleWrite(const boost::system::error_code& error)
 }
 
 /**
- * Deliver a message to the client connected in this TCP session.
+ * @brief Deliver a message to the client connected in this TCP session.
  * @param message: Message to be sent.
  */
 void TcpSession::deliver(const Message& message)

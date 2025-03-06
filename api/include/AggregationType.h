@@ -4,7 +4,8 @@
 #pragma once
 
 /**
- * Types of data aggregations
+ * @enum AggregationType
+ * @brief Types of data aggregations.
  */
 enum class AggregationType
 {

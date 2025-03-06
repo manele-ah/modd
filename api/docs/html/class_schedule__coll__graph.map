@@ -1,0 +1,7 @@
+<map id="Schedule" name="Schedule">
+<area shape="rect" id="Node000001" title="Class that defines the schedule for delivering messages from the PubBroker to the SubBroker." alt="" coords="70,124,145,150"/>
+<area shape="rect" id="Node000002" href="$class_payload.html" title="Abstract class that defines different types of payloads in a message." alt="" coords="5,20,74,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="58,58,102,122,97,125,54,61"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="98,5,256,61"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="152,75,118,125,114,122,148,72"/>
+</map>

@@ -1,10 +1,10 @@
-#include "../include/Id.h"
+#include "Id.h"
 
 /**
- * Overload the "<<" operator for an ID.
- * @param out: Reference to the output stream where the ID will be added.
+ * @brief Overload the output stream operator for printing ID details.
+ * @param out: Output stream to write to.
  * @param id: Reference to an ID.
- * @return The modified output stream.
+ * @return Reference to the modified output stream.
  */
 std::ostream& operator<<(std::ostream& out, const Id& id)
 {

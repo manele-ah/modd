@@ -1,0 +1,12 @@
+<map id="BufferOptimizer" name="BufferOptimizer">
+<area shape="rect" id="Node000001" title="Class that defines the double buffer size of each topic in the PubBroker. This is formulated as a MIL..." alt="" coords="628,97,739,123"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="290,9,436,35"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="451,30,527,44,605,66,662,94,660,99,603,71,526,49,450,35"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="284,59,442,99"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="458,85,628,102,627,107,457,91"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,156,179,197"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="194,162,627,113,628,119,195,168"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="284,187,442,243"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="195,188,284,201,283,206,194,194"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="457,207,530,194,567,184,603,170,640,147,668,121,672,125,643,151,605,175,569,189,531,200,458,212"/>
+</map>

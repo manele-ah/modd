@@ -1,5 +1,5 @@
-#ifndef DRONEPROTOCOL_TOPICCONFIGURATION_H
-#define DRONEPROTOCOL_TOPICCONFIGURATION_H
+#ifndef MODD_TOPICCONFIGURATION_H
+#define MODD_TOPICCONFIGURATION_H
 
 #pragma once
 
@@ -12,40 +12,70 @@
 #include <boost/serialization/base_object.hpp>
 #include "Payload.h"
 
+/**
+ * @class TopicConfiguration
+ * @brief Class that defines the configuration for topics.
+ */
 class TopicConfiguration : public Payload
 {
 private:
+    /** List of topic IDs. */
     std::vector<std::string> m_topics;
-    std::vector<int> m_sizes;
+    /** Sizes of the buffers associated with each topic. */
+    std::vector<unsigned int> m_sizes;
 
 public:
+    /**
+     * @brief Default constructor that initializes an empty topic configuration.
+     */
     TopicConfiguration();
 
-    TopicConfiguration(const std::vector<std::string>& topics, const std::vector<int>& sizes);
+    /**
+     * @brief Initialize a topic configuration.
+     * @param topics: List of topic IDs.
+     * @param sizes: Sizes of the buffers associated with each topic.
+     */
+    TopicConfiguration(const std::vector<std::string>& topics, const std::vector<unsigned int>& sizes);
 
+    /**
+     * @brief Create a deep copy of a TopicConfiguration instance.
+     * @return Pointer to the newly cloned object.
+     */
     std::unique_ptr<Payload> clone() const override;
 
     /**
-     * Getter method for topics.
-     * @return List of topics.
+     * @brief Retrieve the IDs of the topics.
+     * @return List of topic IDs.
      */
     std::vector<std::string> getTopics() const;
 
     /**
-     * Getter method for sizes for each topic.
-     * @return List of sizes.
+     * @brief Retrieve the list of sizes corresponding to each topic.
+     * @return Sizes of the buffers associated with each topic.
      */
-    std::vector<int> getSizes() const;
+    std::vector<unsigned int> getSizes() const;
 
+    /**
+     * @brief Return a string representation of the topic configuration.
+     * @return String that represents the topic configuration.
+     */
     std::string print() const override;
 
+    /**
+     * Grant access to Boost serialization for private members of the TopicConfiguration class.
+     */
     friend class boost::serialization::access;
 
-    template<class Archive> void serialize(Archive& ar, const unsigned int)
+    /**
+     * @brief Serialize the topic configuration.
+     * @param archive: Archive used for serialization.
+     * @param version: Version number of the serialization protocol.
+     */
+    template<class Archive> void serialize(Archive& archive, const unsigned int)
     {
-        ar.template register_type<TopicConfiguration>();
-        ar & boost::serialization::base_object<Payload>(*this);
-        ar & m_topics & m_sizes;
+        archive.template register_type<TopicConfiguration>();
+        archive & boost::serialization::base_object<Payload>(*this);
+        archive & m_topics & m_sizes;
     }
 };
 

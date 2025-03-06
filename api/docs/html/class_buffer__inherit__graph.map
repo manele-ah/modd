@@ -1,0 +1,7 @@
+<map id="Buffer&lt; T &gt;" name="Buffer&lt; T &gt;">
+<area shape="rect" id="Node000001" title="Class that defines a buffer to store a collection of elements." alt="" coords="100,5,187,31"/>
+<area shape="rect" id="Node000002" href="$class_double_buffer.html" title="Class that defines a thread&#45;safe double buffering mechanism to handle concurrent reads and writes...." alt="" coords="5,79,133,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="122,44,83,81,80,77,118,40"/>
+<area shape="rect" id="Node000003" href="$class_simple_buffer.html" title=" " alt="" coords="156,79,283,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="169,40,209,77,205,81,166,44"/>
+</map>

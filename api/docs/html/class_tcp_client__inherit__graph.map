@@ -1,0 +1,7 @@
+<map id="TcpClient" name="TcpClient">
+<area shape="rect" id="Node000001" title="Class that defines a TCP client." alt="" coords="84,5,160,31"/>
+<area shape="rect" id="Node000002" href="$class_publisher_core.html" title="Class that defines the core logic of a publisher." alt="" coords="5,79,109,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,44,70,80,66,77,99,40"/>
+<area shape="rect" id="Node000003" href="$class_subscriber_core.html" title="Class that defines the core logic of a subscriber." alt="" coords="133,79,245,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="146,40,180,77,176,80,142,44"/>
+</map>

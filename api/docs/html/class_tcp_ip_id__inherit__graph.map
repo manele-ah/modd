@@ -1,0 +1,5 @@
+<map id="TcpIpId" name="TcpIpId">
+<area shape="rect" id="Node000001" title="Class to handle TCP/IP endpoints." alt="" coords="5,79,70,105"/>
+<area shape="rect" id="Node000002" href="$class_id.html" title="Abstract class of an ID." alt="" coords="18,5,57,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="40,46,40,79,35,79,35,46"/>
+</map>
