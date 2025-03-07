@@ -1,0 +1,9 @@
+sub_broker_node:
+  ros__parameters:
+    pub_broker_ip: "172.17.131.83"
+    sub_broker_ip: "172.17.131.83"
+    pub_broker_port: 7171
+    sub_broker_port: 7272
+    logs_path: "/home/manele/modd_ws/src/ros_modd_adapter/data/"
+    topics_path: "/home/manele/modd_ws/src/ros_modd_adapter/conf/topics.conf"
+    subscribers_path: "/home/manele/modd_ws/src/ros_modd_adapter/conf/subscribers.conf"

@@ -101,6 +101,7 @@ cmake --build /path/to/build --target Subscriber -j $(nproc)
 - Ubuntu 24.04
 - ROS 2 Jazzy
 - Boost 1.80.0
+- Google OR-Tools 9.11
 
 ### **Dependencies**
 
@@ -179,7 +180,7 @@ cd ~/ros2_ws
 colcon build --symlink-install --cmake-args -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --packages-select interfaces
 
 # Build 'ros_modd_adapter' package
-colcon build --symlink-install --cmake-args -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --packages-select ros_modd_adapter
+colcon build --symlink-install --cmake-args -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_PREFIX_PATH=/path/to/or-tools --packages-select ros_modd_adapter
 ```
 
 Once built, source the workspace to overlay these packages onto your ROS 2 environment.
@@ -194,8 +195,8 @@ Topics (sensor data) and subscription requirements are defined respectively in `
 
 Example of a `topics.conf` file:
 ```sh
-accel_x,0.04
-accel_y,0.04
+accel_x,0.2
+accel_y,0.2
 ```
 Each line describes a topic name and its publishing period in seconds.
 
