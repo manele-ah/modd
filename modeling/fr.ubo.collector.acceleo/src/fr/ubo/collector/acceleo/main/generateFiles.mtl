@@ -7,13 +7,12 @@
 [generateSubBrokerConfigurationFile(root)/]
 [generateTopicConfigurationFile(root)/]
 [generateSubscriberConfigurationFile(root)/]
-[generatePublisherSource(root)/]
 [generatePublisherHeader(root)/]
+[generatePublisherSource(root)/]
 [generatePublisherSkeleton(root)/]
-[generateSubscriberApp(root)/]
-[generateSubscriberHelperSource(root)/]
-[generateSubscriberHelperHeader(root)/]
-[generateViewerExample(root)/]
+[generateSubscriberHeader(root)/]
+[generateSubscriberSource(root)/]
+[generateSubscriberSkeleton(root)/]
 [/template]
 
 [template public generatePubBrokerConfigurationFile(root : DataCollector)]
@@ -52,7 +51,9 @@ CONFIGURATION_PATH=[sub_broker.configurationPath/]
 [file ('conf/topics.conf', false, 'UTF-8')]
 [for (sensor : Sensor | root.drone.sensorsDrone)]
 [for (measured_variable : MeasuredVariable | sensor.sensorMeasuredVariables)]
-[measured_variable.name/]
+[let publisher : Publisher = root.publishers->select(publisher | publisher.publishedMeasures->includes(measured_variable))->first()]
+[measured_variable.name.concat(',').concat(publisher.period.toString())/]
+[/let]
 [/for]
 [/for]
 [/file]
@@ -68,15 +69,92 @@ CONFIGURATION_PATH=[sub_broker.configurationPath/]
 [/file]
 [/template]
 
+[template public generatePublisherHeader(root : DataCollector)]
+[file ('generated/Publisher.h', false, 'UTF-8')]
+#ifndef MODD_PUBLISHER_H
+#define MODD_PUBLISHER_H
+
+#pragma once
+
+#include <thread>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <boost/asio.hpp>
+#include "PublisherCore.h"
+
+/**
+ * @class Publisher
+ * @brief Class that manages a publisher, acting as a high-level wrapper for PublisherCore.
+ */
+class Publisher
+{
+private:
+    /** Reference to the I/O context for asynchronous operations. */
+    boost::asio::io_context m_io_context;
+    /** PubBroker TCP/IP ID. */
+    TcpIpId m_id_pub_broker;
+    /** Core publisher logic. */
+    PublisherCore m_core_publisher;
+    /** Dedicated thread for running the I/O context. */
+    std::thread m_io_thread;
+    /** To ensure that the I/O context remains active. */
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_work_guard;
+    /** Flag to prevent repeated shutdown. */
+    std::atomic<bool> m_stopped{false};
+
+    /**
+     * @brief Start the I/O context in a separate thread to handle asynchronous operations.
+     */
+    void startIoContext();
+
+public:
+    /**
+     * @brief Initialize a publisher instance.
+     * @param name: Publisher ID.
+     */
+    Publisher(const std::string& name);
+
+    /**
+     * @brief Destructor that ensures proper shutdown of the publisher and its I/O thread.
+     */
+    ~Publisher();
+
+    /**
+     * @brief Publish a message to the PubBroker.
+     * @param topic: Topic ID of the published measure.
+     * @param timestamp: Timestamp of the measure.
+     * @param value: Value of the measure.
+     */
+    void publish(const std::string& topic, long long timestamp, double value);
+
+    /**
+     * @brief Stop the I/O context, terminating asynchronous operations safely.
+     */
+    void stopIoContext();
+};
+
+#endif
+[/file]
+[/template]
+
 [template public generatePublisherSource(root : DataCollector)]
 [file ('generated/Publisher.cpp', false, 'UTF-8')]
 #include "Publisher.h"
 
-Publisher::Publisher(const std::string& name) : m_id_broker("[root.pubBroker.id.oclAsType(TcpIpEndpoint).ipAddress/]", [root.pubBroker.id.oclAsType(TcpIpEndpoint).port/]), m_core_publisher(name, m_id_broker, m_io_context), m_work_guard(boost::asio::make_work_guard(m_io_context))
+/**
+ * @brief Initialize a publisher instance.
+ * @param name: Publisher ID.
+ */
+Publisher::Publisher(const std::string& name) : m_id_pub_broker("[root.pubBroker.id.oclAsType(TcpIpEndpoint).ipAddress/]", [root.pubBroker.id.oclAsType(TcpIpEndpoint).port/]), m_core_publisher(name, m_id_pub_broker, m_io_context), m_work_guard(boost::asio::make_work_guard(m_io_context))
 {
     startIoContext();
 }
 
+/**
+ * @brief Destructor that ensures proper shutdown of the publisher and its I/O thread.
+ */
 Publisher::~Publisher()
 {
     stopIoContext();
@@ -86,347 +164,292 @@ Publisher::~Publisher()
     }
 }
 
+/**
+ * @brief Publish a message to the PubBroker.
+ * @param topic: Topic ID of the published measure.
+ * @param timestamp: Timestamp of the measure.
+ * @param value: Value of the measure.
+ */
 void Publisher::publish(const std::string& topic, long long timestamp, double value)
 {
-    m_core_publisher.publish(topic, timestamp, value);
+    if (m_stopped.load())
+    {
+        return;
+    }
+    // All calls to publish() are safe to make from any thread
+    // The actual write is posted to the I/O thread
+    boost::asio::post(m_io_context, ['['/]this, topic, timestamp, value]()
+    {
+        m_core_publisher.publish(topic, timestamp, value);
+    });
 }
 
+/**
+ * @brief Start the I/O context in a separate thread to handle asynchronous operations.
+ */
 void Publisher::startIoContext()
 {
     m_io_thread = std::thread(['['/]this[']'/](){ m_io_context.run(); });
 }
 
+/**
+ * @brief Stop the I/O context, terminating asynchronous operations safely.
+ */
 void Publisher::stopIoContext()
 {
-    m_work_guard.reset();
-    m_io_context.stop();
+    if (!m_stopped.exchange(true))
+    {
+        m_work_guard.reset();
+        m_io_context.stop();
+    }
 }
-[/file]
-[/template]
-
-[template public generatePublisherHeader(root : DataCollector)]
-[file ('generated/Publisher.h', false, 'UTF-8')]
-#ifndef DRONEPROTOCOL_PUBLISHER_H
-#define DRONEPROTOCOL_PUBLISHER_H
-
-#include <thread>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <boost/asio.hpp>
-#include "../include/PublisherCore.h"
-
-class Publisher
-{
-private:
-    boost::asio::io_context m_io_context;
-    TcpIpId m_id_broker;
-    PublisherCore m_core_publisher;
-    std::thread m_io_thread;
-    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_work_guard;
-
-    void startIoContext();
-
-public:
-    Publisher(const std::string& name);
-
-    ~Publisher();
-
-    void publish(const std::string& topic, long long timestamp, double value);
-
-    void stopIoContext();
-};
-
-#endif
 [/file]
 [/template]
 
 [template public generatePublisherSkeleton(root : DataCollector)]
 [for (publisher : Publisher | root.publishers)]
 [file ('main/main_publisher_'.concat(publisher.name.toLowerCase()).concat('.cpp'), false, 'UTF-8')]
+#include <memory>
+#include <csignal>
+#include <boost/asio.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
-#include "../generated/Publisher.h"
+#include "Publisher.h"
 
-std::unique_ptr<Publisher> pub;
-boost::asio::io_context io_context;
-boost::asio::steady_timer global_timer(io_context);
+/** Global atomic to signal shutdown. */
+std::atomic<bool> shutdown_requested{false};
+/** Global publisher pointer. */
+std::unique_ptr<Publisher> publisher;
 
-void handleSignal()
+/**
+ * @brief Signal handler to catch Ctrl-C and initiate graceful shutdown.
+ * @param signal: Caught signal.
+ */
+void handleSignal(int signal)
 {
-    static boost::asio::signal_set signals(io_context, SIGINT);
-    signals.async_wait(['['/]&[']'/](const boost::system::error_code& error, int)
-                       {
-                           if (!error)
-                           {
-                               BOOST_LOG_TRIVIAL(info) << "['['/]Main Publisher[']'/] Interrupt signal received. Stopping publisher";
-                               if (pub)
-                               {
-                                   pub->stopIoContext();
-                               }
-                               io_context.stop();
-                           }
-                       });
+    if (signal == SIGINT)
+    {
+        if (!shutdown_requested.exchange(true))
+        {
+            if (publisher)
+            {
+                BOOST_LOG_TRIVIAL(info) << "['['/]Main Publisher[']'/] Interrupt signal received. Stopping publisher";
+                publisher->stopIoContext();
+            }
+        }
+    }
 }
+
+
+int main()
+{
+    // Set logging severity level
+    boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
+    std::signal(SIGINT, handleSignal);
+    // Create publisher instance
+    publisher = std::make_unique<Publisher>("[publisher.name/]");
+    // For data publication
+[for (topic : MeasuredVariable | publisher.publishedMeasures)]
+    // publisher->publish("[topic.name/]", timestamp, value);
+[/for]
+    return 0;
+}
+[/file]
+[/for]
+[/template]
+
+[template public generateSubscriberHeader(root : DataCollector)]
+[file ('generated/Subscriber.h', false, 'UTF-8')]
+#ifndef MODD_SUBSCRIBER_H
+#define MODD_SUBSCRIBER_H
+
+#pragma once
+
+#include <thread>
+#include <memory>
+#include <boost/asio.hpp>
+#include "SubscriberCore.h"
+
+/**
+ * @class Subscriber
+ * @brief Class that manages a subscriber, acting as a high-level wrapper for SubscriberCore.
+ */
+class Subscriber
+{
+private:
+    /** Reference to the I/O context for asynchronous operations. */
+    boost::asio::io_context m_io_context;
+    /** SubBroker TCP/IP ID. */
+    TcpIpId m_id_sub_broker;
+    /** Core subscriber logic. */
+    SubscriberCore m_subscriber_core;
+    /** Dedicated thread for running the I/O context. */
+    std::thread m_io_thread;
+    /** To ensure that the I/O context remains active. */
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_work_guard;
+    /** Flag to prevent repeated shutdown. */
+    std::atomic<bool> m_stopped{false};
+
+    /**
+     * @brief Start the I/O context in a separate thread to handle asynchronous operations.
+     */
+    void startIoContext();
+
+public:
+    /**
+     * @brief Initialize a subscriber instance.
+     * @param name: Subscriber ID.
+     * @param topic: Topic of interest for the subscriber.
+     * @param period: Delivery interval in seconds.
+     * @param aggregation_type: Aggregation type requested by the subscriber.
+     */
+    Subscriber(const std::string& name, const std::string& topic, double period, AggregationType aggregation_type);
+
+    /**
+     * @brief Destructor that ensures proper shutdown of the subscriber and its I/O thread.
+     */
+    ~Subscriber();
+
+    /**
+     * @brief Start subscription and listen to incoming messages.
+     */
+    void start();
+
+    /**
+     * @brief Stop the I/O context, terminating asynchronous operations safely.
+     */
+    void stopIoContext();
+
+    /**
+     * @brief Register a callback to handle incoming messages.
+     * @tparam T: Callable type matching the signature of the emitted signal in SubscriberCore.
+     * @param callback: Function or lambda that should be invoked whenever data are received.
+     */
+    template <typename T>
+    void setDataCallback(T&& callback)
+    {
+        m_subscriber_core.onDataReceived.connect(std::forward<T>(callback));
+    }
+};
+
+#endif
+[/file]
+[/template]
+
+[template public generateSubscriberSource(root : DataCollector)]
+[file ('generated/Subscriber.cpp', false, 'UTF-8')]
+#include "Subscriber.h"
+
+/**
+ * @brief Initialize a subscriber instance.
+ * @param name: Subscriber ID.
+ * @param topic: Topic of interest for the subscriber.
+ * @param period: Delivery interval in seconds.
+ * @param aggregation_type: Aggregation type requested by the subscriber.
+ */
+Subscriber::Subscriber(const std::string& name, const std::string& topic, double period, AggregationType aggregation_type) : m_id_sub_broker("[root.subBroker.id.oclAsType(TcpIpEndpoint).ipAddress/]", [root.subBroker.id.oclAsType(TcpIpEndpoint).port/]), m_subscriber_core(name, m_id_sub_broker, topic, period, aggregation_type, m_io_context), m_work_guard(boost::asio::make_work_guard(m_io_context))
+{
+
+}
+
+/**
+ * @brief Destructor that ensures proper shutdown of the subscriber and its I/O thread.
+ */
+Subscriber::~Subscriber()
+{
+    stopIoContext();
+    if (m_io_thread.joinable())
+    {
+        m_io_thread.join();
+    }
+}
+
+/**
+ * @brief Start subscription and listen to incoming messages.
+ */
+void Subscriber::start()
+{
+    m_subscriber_core.subscribe();
+    m_subscriber_core.read();
+    startIoContext();
+}
+
+/**
+ * @brief Start the I/O context in a separate thread to handle asynchronous operations.
+ */
+void Subscriber::startIoContext()
+{
+    m_io_thread = std::thread(['['/]this[']'/](){ m_io_context.run(); });
+}
+
+/**
+ * @brief Stop the I/O context, terminating asynchronous operations safely.
+ */
+void Subscriber::stopIoContext()
+{
+    if (!m_stopped.exchange(true))
+    {
+        m_work_guard.reset();
+        m_io_context.stop();
+    }
+}
+[/file]
+[/template]
+
+[template public generateSubscriberSkeleton(root : DataCollector)]
+[file ('main/main_client.cpp', false, 'UTF-8')]
+#include <thread>
+#include <vector>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
+#include "TcpIpId.h"
+#include "Subscriber.h"
+
+/**
+ * @struct SubscriberConfig
+ * @brief Structure to hold subscriber information.
+ */
+struct SubscriberConfig
+{
+    std::string name;
+    double period = 0.0;
+    AggregationType aggregation_type = AggregationType::DEFAULT;
+    std::string topic;
+};
 
 int main()
 {
     // Set logging severity level
     boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
 
-    pub = std::make_unique<Publisher>("[publisher.name/]");
-
-    handleSignal();
-    
-    // For data publication
-[for (topic : MeasuredVariable | publisher.publishedMeasures)]
-    // pub->publish("[topic.name/]", timestamp, value);
-[/for]
-}
-[/file]
-[/for]
-[/template]
-
-[template public generateSubscriberApp(root : DataCollector)]
-[file ('main/main_subscriber.cpp', false, 'UTF-8')]
-#include <thread>
-#include <vector>
-#include <QLabel>
-#include <QWidget>
-#include <QGridLayout>
-#include <QApplication>
-#include <boost/log/core.hpp>
-#include <boost/bind/bind.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-#include "../include/TcpIpId.h"
-#include "../generated/PlotWindow.h"
-#include "../include/SubscriberCore.h"
-#include "../generated/SubscriberHelper.h"
-
-using namespace boost::placeholders;
-
-struct SubscriberConfig
-{
-    std::string name;
-    double period;
-    AggregationType aggregation_type;
-    std::string topic;
-};
-
-int main(int argc, char *argv['['/][']'/])
-{
-    boost::log::core::get()->set_filter(boost::log::trivial::severity >= boost::log::trivial::info);
-    QApplication application(argc, argv);
-
-    QWidget main_window;
-    auto* layout = new QGridLayout(&main_window);
-
-    const size_t subscribers_number = [root.subscribers->size()/];
-    std::vector<std::thread> threads;
-    std::vector<std::unique_ptr<boost::asio::io_context>> io_contexts;
-    std::vector<std::unique_ptr<SubscriberCore>> subscribers;
-    std::vector<std::unique_ptr<PlotWindow>> windows;
-    std::vector<std::unique_ptr<SubscriberHelper>> helpers;
-    std::vector<std::unique_ptr<QLabel>> titles;
-
-    std::vector<SubscriberConfig> configs = {
+    // Parse subscribers information
+    std::vector<SubscriberConfig> subscribers_configurations = {
 [for (subscriber : Subscriber | root.subscribers)]
-											 {"[subscriber.name/]", [subscriber.period/], AggregationType::[if (subscriber.aggregation = 'ALL')]'NONE'[else][subscriber.aggregation/][/if], "[subscriber.monitoredMeasure.name/]"}[if (subscriber <> root.subscribers->last())], [/if]
+                                             {"[subscriber.name/]", [subscriber.period/], AggregationType::[if (subscriber.aggregation = 'ALL')]'NONE'[else][subscriber.aggregation/][/if], "[subscriber.monitoredMeasure.name/]"}[if (subscriber <> root.subscribers->last())], [/if]
 [/for]
                                             };
 
-    TcpIpId id_proxy("[root.subBroker.id.oclAsType(TcpIpEndpoint).ipAddress/]", [root.subBroker.id.oclAsType(TcpIpEndpoint).port/]);
+    const size_t subscribers_number = [root.subscribers->size()/];
+    std::vector<std::unique_ptr<Subscriber>> subscribers;
 
+    // Create subscribers instances and set up callbacks
     for (size_t i = 0; i < subscribers_number; ++i)
     {
-        io_contexts.emplace_back(std::make_unique<boost::asio::io_context>());
-        helpers.emplace_back(std::make_unique<SubscriberHelper>());
-        subscribers.emplace_back(std::make_unique<SubscriberCore>(configs['['/]i[']'/].name, id_proxy, configs['['/]i[']'/].topic, configs['['/]i[']'/].period, configs['['/]i[']'/].aggregation_type, *io_contexts.back()));
-        windows.emplace_back(std::make_unique<PlotWindow>());
-        titles.emplace_back(std::make_unique<QLabel>(QString::fromStdString(configs['['/]i[']'/].topic)));
-
-        subscribers.back()->subscribe();
-        subscribers.back()->read();
-
-        subscribers.back()->onDataReceived.connect(boost::bind(&SubscriberHelper::receiveData, helpers.back().get(), _1, _2, _3));
-        QObject::connect(helpers.back().get(), &SubscriberHelper::newDataReceived, windows.back().get(), ['['/]&, i[']'/](const std::string&, unsigned long long x, double y)
-        {
-            windows['['/]i[']'/]->plotData(x, y);
-        });
-
-        int row = (int) i / 2;
-        int col = (int) i % 2;
-        layout->addWidget(titles.back().get(), row * 2, col);
-        layout->addWidget(windows.back().get(), row * 2 + 1, col);
-
-        threads.emplace_back(['['/]context = io_contexts.back().get()[']'/](){ context->run(); });
+        subscribers.emplace_back(std::make_unique<Subscriber>(subscribers_configurations['['/]i[']'/].name, subscribers_configurations['['/]i[']'/].topic, subscribers_configurations['['/]i[']'/].period, subscribers_configurations['['/]i[']'/].aggregation_type));
+        subscribers.back()->start();
+        subscribers.back()->setDataCallback(['['/][']'/](const std::string& subscriber_name, unsigned long long int timestamp, double value)
+                                            {
+                                            BOOST_LOG_TRIVIAL(info) << "['['/]Main Client[']'/] Subscriber " << subscriber_name << " received (" << timestamp << ", " << value << ")";
+                                            });
 
     }
 
-    main_window.setLayout(layout);
-    main_window.resize(1200, 600);
-    main_window.show();
-    int result = application.exec();
+    std::cout << "['['/]Main Client[']'/] Subscribers are running. Press ENTER to exit" << std::endl;
+    std::cin.get();
 
-    for (auto& thread: threads)
-    {
-        if (thread.joinable())
-        {
-            thread.join();
-        }
-    }
-
-    return result;
+    return 0;
 }
-[/file]
-[/template]
-
-[template public generateSubscriberHelperSource(root : DataCollector)]
-[file ('generated/SubscriberHelper.cpp', false, 'UTF-8')]
-#include "SubscriberHelper.h"
-
-SubscriberHelper::SubscriberHelper(QObject* parent) : QObject(parent)
-{
-
-}
-
-void SubscriberHelper::receiveData(const std::string& subscriber_name, unsigned long long int x, double y)
-{
-    latest_data['['/]subscriber_name[']'/] = {x, y};
-    emit newDataReceived(subscriber_name, x, y);
-}
-[/file]
-[/template]
-
-[template public generateSubscriberHelperHeader(root : DataCollector)]
-[file ('generated/SubscriberHelper.h', false, 'UTF-8')]
-#ifndef DRONEPROTOCOL_SUBSCRIBERHELPER_H
-#define DRONEPROTOCOL_SUBSCRIBERHELPER_H
-
-#include <QApplication>
-
-class SubscriberHelper : public QObject
-{
-    Q_OBJECT
-
-private:
-    std::map<std::string, std::pair<unsigned long long, double>> latest_data;
-
-public:
-    explicit SubscriberHelper(QObject* parent = nullptr);
-
-    void receiveData(const std::string& subscriber_name, unsigned long long int x, double y);
-
-signals:
-    void newDataReceived(const std::string& subscriber_name, unsigned long long int x, double y);
-};
-
-#endif
-[/file]
-[/template]
-
-[template public generateViewerExample(root : DataCollector)]
-[file ('generated/PlotWindow.cpp', false, 'UTF-8')]
-#include <iostream>
-#include "PlotWindow.h"
-
-PlotWindow::PlotWindow(QWidget *parent) : QMainWindow(parent), m_min_max_mode(false)
-{
-    setWindowTitle("Monitoring");
-    m_custom_plot = new QCustomPlot(this);
-    setCentralWidget(m_custom_plot);
-
-    m_custom_plot->addGraph();
-    m_custom_plot->addGraph();
-
-    m_custom_plot->xAxis->setLabel("Timestamp");
-    m_custom_plot->yAxis->setLabel("Value");
-
-    m_custom_ticker = QSharedPointer<CustomTicker>::create();
-    m_custom_plot->xAxis->setTicker(m_custom_ticker);
-}
-
-void PlotWindow::plotData(unsigned long long x, double y_1, double y_2)
-{
-    if (m_min_max_mode && !isnan(y_2))
-    {
-        m_custom_plot->graph(1)->addData(x, y_1);
-        m_custom_plot->graph(1)->addData(x, y_2);
-    }
-    else
-    {
-        m_custom_plot->graph(0)->addData(x, y_1);
-    }
-
-    QCPRange x_range = m_custom_plot->xAxis->range();
-    QCPRange y_range = m_custom_plot->yAxis->range();
-    double x_margin = x_range.size() * 0.05;
-    double y_margin = y_range.size() * 0.05;
-
-    m_custom_plot->xAxis->setRange(x_range.lower - x_margin, x_range.upper + x_margin);
-    m_custom_plot->yAxis->setRange(y_range.lower - y_margin, y_range.upper + y_margin);
-
-    m_custom_plot->rescaleAxes();
-    m_custom_plot->replot();
-}
-[/file]
-
-[file ('generated/PlotWindow.h', false, 'UTF-8')]
-#ifndef DRONEPROTOCOL_PLOTWINDOW_H
-#define DRONEPROTOCOL_PLOTWINDOW_H
-
-#include <QTimer>
-#include <QMainWindow>
-#include <QSharedPointer>
-#include <boost/log/trivial.hpp>
-#include "../lib/qCustomPlot/qcustomplot.h"
-#include "CustomTicker.h"
-
-class PlotWindow : public QMainWindow
-{
-Q_OBJECT
-
-private:
-    QCustomPlot *m_custom_plot;
-    QTimer m_data_timer;
-    QSharedPointer<CustomTicker> m_custom_ticker;
-    bool m_min_max_mode;
-
-public:
-    explicit PlotWindow(QWidget *parent = nullptr);
-
-public slots:
-    void plotData(unsigned long long x, double y_1, double y_2 = NAN);
-
-};
-
-#endif
-[/file]
-
-[file ('generated/CustomTicker.cpp', false, 'UTF-8')]
-#include "CustomTicker.h"
-
-void CustomTicker::addTick(double position, const QString& label)
-{
-    QCPAxisTickerText::addTick(position, label);
-}
-[/file]
-
-[file ('generated/CustomTicker.h', false, 'UTF-8')]
-#ifndef DRONEPROTOCOL_CUSTOMTICKER_H
-#define DRONEPROTOCOL_CUSTOMTICKER_H
-
-#include "../lib/qCustomPlot/qcustomplot.h"
-
-class CustomTicker : public QCPAxisTickerText
-{
-public:
-    void addTick(double position, const QString& label);
-};
-
-#endif
 [/file]
 [/template]
