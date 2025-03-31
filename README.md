@@ -31,12 +31,14 @@ MoDD is organized into three main directories:
 ### **Dependencies**
 
 **1. Install build tools**
+
 Install the required tools to compile and build MoDD.
 ```sh
 sudo apt install cmake ninja-build clang-15 bzip2
 ```
 
 **2. Set Clang as the default compiler**
+
 Ubuntu may use GCC by default. The commands below register Clang as the system’s default.
 ```sh
 # Register clang-15 as the default clang
@@ -49,6 +51,7 @@ sudo update-alternatives --config clang++
 ```
 
 **3. Install Boost**
+
 Download and install Boost 1.80.0 from source. MoDD uses this library to handle networking tasks. 
 ```sh
 # Download the Boost 1.80.0 archive
@@ -64,6 +67,7 @@ sudo ./b2 -j$(nproc) toolset=clang variant=release link=static threading=multi i
 ```
 
 **4. Install Google OR-Tools**
+
 MoDD uses OR-Tools to define and solve the Mixed Integer Linear Programming (MILP) needed for optimizing buffer sizes.
 ```sh
 # Download the OR-Tools 9.11 archive
@@ -106,9 +110,11 @@ cmake --build /path/to/build --target Subscriber -j $(nproc)
 ### **Dependencies**
 
 **1. Install ROS 2**
+
 Follow the official **ROS 2 Jazzy** [installation guide](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html).
 
 **2. Create a workspace**
+
 A workspace is a directory containing one or more ROS 2 packages. This is where you will build MoDD packages.
 ```sh
 # Source ROS 2 environment so that ROS commands and paths are recognized
@@ -123,6 +129,7 @@ For more details on creating workspaces, see [this tutorial](https://docs.ros.or
 ### **Configuration**
 
 **1. Import MoDD ROS 2 packages**
+
 MoDD packages (`interfaces` and `ros_modd_adapter`) are located in the `/ros_packages` directory of the Git repository. 
 
 Copy both of these repositories to `~/modd_ws/src`. Your workspace folder structure should look like this:
@@ -133,6 +140,7 @@ Copy both of these repositories to `~/modd_ws/src`. Your workspace folder struct
 ```
 
 **2. Deploy MoDD libraries**
+
 To enable `ros_modd_adapter` to link against and use MoDD’s core functionality, run the following commands.
 ```sh
 cp /path/to/modd/build/lib*.a ~/modd_ws/src/ros_modd_adapter/lib/modd/release/
@@ -140,6 +148,7 @@ cp /path/to/modd/include/* ~/modd_ws/src/ros_modd_adapter/lib/modd/include/
 ```
 
 **3. Configure MoDD PubBroker and SubBroker**
+
 Under `~/modd_ws/src/ros_modd_adapter/conf`, you will find two sample YAML files that define IP addresses, ports, and data paths for the PubBroker and SubBroker nodes:
 - `pub_broker_node.yaml`
 - `sub_broker_node.yaml` files. 
@@ -191,6 +200,7 @@ source install/setup.bash
 ### **Usage**
 
 **1. Configure MoDD topics and subscriptions requirements**
+
 Topics (sensor data) and subscription requirements are defined respectively in `topics.conf` and `subscribers.conf`. The examples provided in `~/modd_ws/src/ros_packages/conf` are adjusted according to the publisher and subscriber demos in `~/modd_ws/src/ros_packages/demo`.
 
 Example of a `topics.conf` file:
@@ -208,6 +218,7 @@ sub_2,accel_y,2.0,AVERAGE,127.0.0.1:5552
 Each line describes a subscription that consists of an ID, a topic, a subscription period in seconds, an aggregation function (`MIN`, `MAX`, `AVERAGE`, `FIRST`, `LAST`, `NONE`), an IP address and a port number.
 
 **2. Run PubBroker and SubBroker nodes**
+
 Use `ros2 run` to start the PubBroker and SubBroker. The `--params-file` argument points to your YAML configurations.
 ```sh
 # Launch PubBroker node
@@ -218,6 +229,7 @@ ros2 run ros_modd_adapter sub_broker --ros-args --params-file src/ros_modd_adapt
 ```
 
 **2. Run publisher and subscriber examples**
+
 To illustrate the usage of MoDD with ROS 2 publishers and subscribers, sample publishers and subscribers are provided.  
 ```sh
 # Start the publishers
